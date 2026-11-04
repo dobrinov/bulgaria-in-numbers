@@ -1,0 +1,23 @@
+/* Връзки: съотношения, индексна графика, корелации */
+.lk-ratios { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.lk-ratios h3.lk-ratio-label { font-size: 15px; font-weight: 500; color: var(--ink-2); }
+.lk-ratio-vals { display: flex; align-items: baseline; flex-wrap: wrap; gap: 10px; color: var(--muted); }
+.lk-ratio-vals span:first-child { font-size: 20px; }
+.lk-ratio-vals strong { font-size: 32px; font-weight: 700; line-height: 1.1; color: var(--ink); }
+.lk-ratio-change { font-size: 14px; font-weight: 600; }
+.lk-ratios .card-sm p { font-size: 14px; }
+.lk-series-group { display: flex; flex-wrap: wrap; gap: 8px; }
+.lk-series { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 12px; border-radius: 8px; font-size: 14px; font-weight: 500; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
+.lk-series.is-on { background: #fff; border-color: var(--c); }
+.lk-series i { width: 14px; height: 4px; border-radius: 2px; background: var(--c); display: inline-block; }
+.lk-series strong { color: var(--ink); }
+.lk-series strong.is-down { color: var(--muted); }
+.lk-empty { padding: 40px 0; text-align: center; }
+.lk-scatter { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+.lk-scatter-chart { flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.lk-scatter-chart .chart .plab { font-size: 12px; font-weight: 600; fill: var(--ink); }
+.lk-corr { flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 12px; background: var(--bg); border-radius: 12px; padding: 20px; }
+.lk-corr .lk-r { font-size: 40px; font-weight: 700; line-height: 1; }
+.lk-corr strong { font-size: 15px; }
+.lk-corr p { font-size: 15px; color: var(--ink-2); }
+.lk-corr p.small { font-size: 13px; color: var(--muted); }

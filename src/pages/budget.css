@@ -1,0 +1,32 @@
+/* Бюджет и дълг */
+.budget-legend { list-style: none; margin: 0; padding: 0; gap: 8px 20px; }
+.budget-legend li { display: inline-flex; align-items: center; gap: 6px; }
+.cofog-rows { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.cofog-rows li { display: grid; grid-template-columns: 44px minmax(0, 1fr) 100px; align-items: center; gap: 12px; font-size: 14px; }
+.cofog-rows li > span:last-child { text-align: right; color: var(--ink-2); }
+.cofog-rows li.is-on > span:first-child { font-weight: 700; }
+.cofog-rows .stackbar { border-radius: 4px; gap: 1px; }
+.cofog-detail { border-top: 1px solid var(--line-soft); padding-top: 20px; display: flex; flex-direction: column; gap: 14px; }
+.cofog-detail h3 { font-size: 18px; font-weight: 700; }
+.cofog-detail .bars { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 14px 32px; }
+.budget-warn { color: #7A3E00; }
+.gov-table { min-width: 760px; }
+.gov-table th[scope="row"] strong { display: block; color: var(--ink); font-weight: 600; }
+.gov-kind { display: block; font-size: 12px; font-weight: 400; color: var(--muted); }
+.gov-debt { display: grid; grid-template-columns: minmax(0, 1fr) 84px; align-items: center; gap: 10px; }
+.gov-debt .bar { height: 14px; border-radius: 4px; }
+.gov-debt strong, .gov-right { text-align: right; }
+.gov-table td.tone-bad, .gov-debt .tone-bad { color: var(--worse-text); }
+.gov-table td.tone-good, .gov-debt .tone-good { color: var(--accent-dark); }
+@media (max-width: 420px) { .cofog-detail .bars { grid-template-columns: minmax(0, 1fr); } }
+.cofog-detail .bar-head > span:last-child { white-space: nowrap; }
+.gov-table th:nth-child(3), .gov-table td:nth-child(3) { width: 40%; }
+.annual-rows { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.annual-rows li { display: grid; grid-template-columns: 48px minmax(0, 1fr) 84px; align-items: center; gap: 12px; font-size: 14px; }
+.annual-rows li > span:first-child { font-weight: 700; }
+.annual-rows li > div { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.annual-rows .bar { height: 12px; border-radius: 4px; }
+.annual-govs { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.annual-rows strong { text-align: right; }
+.annual-rows .tone-bad { color: var(--worse-text); }
+.annual-rows .tone-good { color: var(--accent-dark); }

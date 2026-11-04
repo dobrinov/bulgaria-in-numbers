@@ -1,0 +1,14 @@
+/* Данъци — легенда на приходите и карти „Кой плаща“. */
+.tax-parts { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px 32px; }
+.tax-parts li { display: grid; grid-template-columns: 14px minmax(0, 1fr) auto; align-items: center; gap: 10px; font-size: 15px; min-height: 32px; }
+.tax-parts .sw { width: 14px; height: 14px; }
+.tax-who { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.tax-who .card { gap: 6px; }
+.tax-who-label { font-size: 15px; color: var(--ink-2); }
+.tax-who-value { font-size: 32px; font-weight: 700; line-height: 1.1; }
+.tax-who .bar { height: 8px; margin-top: 6px; }
+.tax-who .bar > span { background: var(--ink); border-radius: 0; }
+.tax-facts { display: flex; flex-wrap: wrap; gap: 12px 32px; font-size: 15px; color: var(--ink-2); }
+.tax-facts strong { color: var(--ink); }
+.tax-rates td .badge { white-space: nowrap; }
+.tax-rates td:nth-child(2) { white-space: nowrap; }

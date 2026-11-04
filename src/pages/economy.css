@@ -1,0 +1,4 @@
+/* Икономика — легенда към разделената лента със секторите. */
+.eco-parts { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.eco-parts li { display: grid; grid-template-columns: 14px minmax(0, 1fr) auto; align-items: center; gap: 10px; font-size: 15px; min-height: 28px; }
+.eco-parts .sw { width: 14px; height: 14px; }

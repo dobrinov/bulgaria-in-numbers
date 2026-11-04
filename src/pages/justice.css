@@ -1,0 +1,9 @@
+/* Правосъдие */
+.jus-courts { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.jus-courts li { display: grid; grid-template-columns: 44px minmax(0, 1fr) 150px; align-items: center; gap: 12px; font-size: 14px; }
+.jus-courts li.is-on > span:first-child { font-weight: 700; }
+.jus-courts li > span:last-child { text-align: right; color: var(--ink-2); }
+.jus-courts li > span:last-child strong { color: var(--ink); }
+.jus-bar { position: relative; display: block; height: 18px; background: var(--line-soft); border-radius: 4px; overflow: hidden; }
+.jus-bar > span { position: absolute; left: 0; top: 0; bottom: 0; }
+@media (max-width: 480px) { .jus-courts li { grid-template-columns: 40px minmax(0, 1fr) 128px; gap: 8px; font-size: 13px; } }
