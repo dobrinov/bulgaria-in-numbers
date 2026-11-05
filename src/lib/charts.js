@@ -23,9 +23,9 @@ export function niceScale(values) {
  * opts: { values, cmp?, cmpLabel?, mainLabel, selectedIndex, show(v), suffix, title }
  */
 export function lineChart(opts) {
-  const { values, cmp = null, selectedIndex, show, suffix = '', mainLabel = 'България', cmpLabel = 'ЕС-27', title = '' } = opts;
+  const { values, cmp = null, alt = null, altLabel = '', selectedIndex, show, suffix = '', mainLabel = 'България', cmpLabel = 'ЕС-27', title = '' } = opts;
   const W = 800, H = 320, L = 70, R = 20, T = 30, B = 270;
-  const { lo, hi, ticks, dec } = niceScale(values.concat(cmp || []));
+  const { lo, hi, ticks, dec } = niceScale(values.concat(cmp || [], alt || []));
   const X = (i) => L + 10 + (i * (W - L - R - 20)) / (YEARS.length - 1);
   const Y = (v) => B - ((v - lo) / (hi - lo)) * (B - T);
   const path = (xs) => xs.map((v, i) => (v == null ? null : [i, v])).filter(Boolean)
@@ -33,7 +33,7 @@ export function lineChart(opts) {
   const idx = values.map((v, i) => i).filter((i) => values[i] != null);
   const contiguous = idx.length > 1 && idx[idx.length - 1] - idx[0] === idx.length - 1;
   const zero = Y(Math.max(lo, 0));
-  const area = contiguous
+  const area = contiguous && !alt
     ? `M${X(idx[0])},${zero} ` + idx.map((i) => `L${X(i).toFixed(1)},${Y(values[i]).toFixed(1)}`).join(' ') + ` L${X(idx[idx.length - 1])},${zero} Z`
     : '';
 
@@ -41,27 +41,39 @@ export function lineChart(opts) {
     <line x1="${L}" x2="${W - R}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" stroke="${v === 0 && lo < 0 ? '#8792A6' : COLORS.grid}" />
     <text x="${L - 8}" y="${(Y(v) + 4).toFixed(1)}" text-anchor="end" class="tick">${esc(fmt(v, dec) + suffix)}</text>`).join('');
   const years = YEARS.map((y, i) => `<text x="${X(i).toFixed(1)}" y="${B + 24}" text-anchor="middle" class="tick${i === selectedIndex ? ' tick-on' : ''}">${y}</text>`).join('');
+  // Етикетите на двете линии са от външната им страна, за да не се застъпват.
+  const altGap = (i) => (alt && alt[i] != null ? Math.abs(Y(alt[i]) - Y(values[i])) : 0);
   const dots = idx.map((i) => {
     const v = values[i];
     const on = i === selectedIndex;
-    const below = cmp && cmp[i] != null && cmp[i] > v && v >= 0;
+    const below = alt ? alt[i] != null && alt[i] > v * (v >= 0 ? 1.0001 : 0.9999)
+      : cmp != null && cmp[i] != null && cmp[i] > v && v >= 0;
     const ly = below ? Y(v) + (on ? 24 : 20) : Y(v) - (on ? 12 : 9);
     return `<circle cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="${on ? 6 : 3.5}" fill="${on ? 'var(--accent)' : '#fff'}" stroke="var(--accent)" stroke-width="2" />
       <text x="${X(i).toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" class="val${on ? ' val-on' : ''}">${esc(show(v))}</text>`;
   }).join('');
+  const altDots = alt ? alt.map((a, i) => {
+    if (a == null || values[i] == null || altGap(i) < 16) return '';
+    const on = i === selectedIndex;
+    const ly = a > values[i] ? Y(a) - (on ? 12 : 9) : Y(a) + (on ? 24 : 20);
+    return `<circle cx="${X(i).toFixed(1)}" cy="${Y(a).toFixed(1)}" r="${on ? 5 : 3}" fill="${on ? COLORS.real : '#fff'}" stroke="${COLORS.real}" stroke-width="2" />
+      <text x="${X(i).toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" class="val val-real${on ? ' val-on' : ''}">${esc(show(a))}</text>`;
+  }).join('') : '';
   const sel = selectedIndex >= 0 ? `<line x1="${X(selectedIndex)}" x2="${X(selectedIndex)}" y1="${T - 10}" y2="${B}" stroke="${COLORS.ink}" stroke-dasharray="3 4" />` : '';
 
   return `
   <div class="legend">
     <span><i class="swatch-line"></i>${esc(mainLabel)}</span>
+    ${alt ? `<span><i class="swatch-real"></i>${esc(altLabel)}</span>` : ''}
     ${cmp ? `<span><i class="swatch-dash"></i>${esc(cmpLabel)}</span>` : ''}
   </div>
   <svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(title)}">
     ${grid}${sel}
     ${area ? `<path d="${area}" fill="var(--accent)" fill-opacity="0.08" />` : ''}
     ${cmp ? `<path d="${path(cmp)}" fill="none" stroke="#64748B" stroke-width="2" stroke-dasharray="6 5" />` : ''}
+    ${alt ? `<path d="${path(alt)}" fill="none" stroke="${COLORS.real}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" />` : ''}
     <path d="${path(values)}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" />
-    ${dots}${years}
+    ${altDots}${dots}${years}
   </svg>`;
 }
 

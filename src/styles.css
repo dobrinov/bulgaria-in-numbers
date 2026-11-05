@@ -113,6 +113,15 @@ p { margin: 0; }
 .legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; color: var(--ink-2); }
 .legend span { display: inline-flex; align-items: center; gap: 6px; }
 .swatch-line { width: 18px; height: 3px; background: var(--accent); display: inline-block; }
+.swatch-real { width: 18px; height: 3px; background: #0F766E; display: inline-block; }
+.chart .val-real { fill: #0F766E; }
+.real-toggle { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 10px 14px; border-radius: 10px; background: #F0FDFA; border: 1px solid #CCEBE6; font-size: 14px; color: var(--ink-2); }
+.real-toggle button { min-height: 44px; display: inline-flex; align-items: center; gap: 10px; padding: 0 14px 0 8px; border-radius: 999px; border: 1px solid #99D5CC; background: #fff; color: var(--ink); font-weight: 600; font-size: 14px; }
+.real-toggle .knob { width: 34px; height: 20px; border-radius: 999px; background: #CBD5E1; position: relative; transition: background .15s; }
+.real-toggle .knob::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: transform .15s; }
+.real-toggle button[aria-pressed="true"] .knob { background: #0F766E; }
+.real-toggle button[aria-pressed="true"] .knob::after { transform: translateX(14px); }
+.real-toggle p { margin: 0; flex: 1 1 260px; }
 .swatch-dash { width: 18px; border-top: 2px dashed #64748B; display: inline-block; }
 .sw { width: 12px; height: 12px; border-radius: 3px; display: inline-block; flex: none; }
 .axis-label { font-size: 13px; font-weight: 600; color: var(--ink-2); }

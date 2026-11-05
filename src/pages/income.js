@@ -54,12 +54,12 @@ export default {
       sub: 'Коефициент на Джини за разполагаемия доход (0–100)', source: 'Евростат, ilc_di12',
     },
     minw: {
-      label: 'Минимална заплата', tab: 'Минимална заплата', d: 0, suffix: ' €', good: 'up', values: MINW,
+      label: 'Минимална заплата', tab: 'Минимална заплата', d: 0, suffix: ' €', good: 'up', money: true, values: MINW,
       sub: 'Минимална месечна работна заплата, € (второ полугодие)', source: 'Евростат, earn_mw_cur',
       note: (v, i) => (i === YEARS.length - 1 ? 'От 2026 г.: 620 €' : ''),
     },
     pension: {
-      label: 'Средна пенсия', tab: 'Пенсии', d: 0, suffix: ' €', good: 'up', values: PENS.map((v) => v / EUR),
+      label: 'Средна пенсия', tab: 'Пенсии', d: 0, suffix: ' €', good: 'up', money: true, values: PENS.map((v) => v / EUR),
       sub: 'Средна месечна пенсия (всички видове), €', source: 'НОИ, статистически бюлетини',
       note: (v, i) => fmt(PENSN[i], 0) + ' пенсионери',
     },

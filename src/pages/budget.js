@@ -189,7 +189,7 @@ export default {
       sub: 'Дефицит (−) или излишък (+) на сектор „Държавно управление“ като дял от БВП',
     },
     bal: {
-      label: 'Дефицит (−) / излишък (+), млрд. €', tab: 'Дефицит/излишък, млрд. €', d: 2, suffix: '', good: 'up', signed: true, pp: true,
+      label: 'Дефицит (−) / излишък (+), млрд. €', tab: 'Дефицит/излишък, млрд. €', d: 2, suffix: '', good: 'up', signed: true, pp: true, money: true,
       values: bn(BAL_BGN), source: SRC, note: kind,
       sub: 'Дефицит (−) или излишък (+), млрд. евро',
     },
@@ -211,7 +211,7 @@ export default {
       sub: 'Консолидиран дълг на сектор „Държавно управление“ като дял от БВП',
     },
     debt: {
-      label: 'Дълг, млрд. €', tab: 'Дълг, млрд. €', d: 1, suffix: '', good: 'down',
+      label: 'Дълг, млрд. €', tab: 'Дълг, млрд. €', d: 1, suffix: '', good: 'down', money: true,
       values: bn(DEBT_BGN), source: SRC,
       sub: 'Консолидиран дълг на сектор „Държавно управление“, млрд. евро',
     },

@@ -37,6 +37,7 @@ const ACTIONS = {
   },
   'select-region': (el) => update({ region: el.value === '' ? null : Number(el.value) }),
   'clear-region': () => update({ region: null }),
+  real: () => update({ real: !state.real }),
 };
 
 function handle(e, type) {

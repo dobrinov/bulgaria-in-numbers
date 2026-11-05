@@ -6,14 +6,15 @@
 //   id, eyebrow, title, lead, summary: [текст],
 //   map?: { metrics: [ключове от MAP_METRICS], drivesPage?: true }  // drivesPage: картата филтрира показателите
 //   defaultYear, defaultMetric,
-//   metrics: { ключ: { label, tab?, d, suffix, good: 'up'|'down'|'none', pp?, signed?,
+//   metrics: { ключ: { label, tab?, d, suffix, good: 'up'|'down'|'none', pp?, signed?, money?, realNote?,
 //                      values: [11 стойности 2015–2025], eu?, euLabel?, note?(v, i), sub, source,
 //                      reg?(областИндекс) => частично описание за областта } },
+//   money: true — сума в евро; графиката може да покаже и стойността без инфлацията.
 //   order: [ключове], kpiTitle?: (година) => заглавие на показателите,
 //   sections?: [(ctx) => html],
 //   method: [{ title, text }], sources: [{ href, title, text }],
 // }
-import { YEARS, fmt, esc, showValue, COLORS } from '../lib/format.js';
+import { YEARS, fmt, esc, showValue, COLORS, toReal, REAL_BASE_YEAR } from '../lib/format.js';
 import { lineChart } from '../lib/charts.js';
 import { renderRegionMap, renderRegionChip } from './regionMap.js';
 import { OBLASTS } from '../data/oblasts.js';
@@ -57,6 +58,20 @@ function kpiCards(page, M, ctx) {
       tone = better === null || diff === 0 ? 'muted' : better ? 'good' : 'bad';
     }
     let note = v != null && m.note ? m.note(v, yi) : '';
+    if (m.money && ctx.state.real && v != null && yi < YEARS.length - 1) {
+      const real = toReal(m.values);
+      const p = yi > 0 ? real[yi - 1] : null;
+      let rd = '';
+      if (p != null && !m.pp) {
+        const d = ((real[yi] - p) / Math.abs(p)) * 100;
+        rd = ` (${d > 0 ? '▲' : d < 0 ? '▼' : '■'} ${fmt(Math.abs(d), 1)}% реално)`;
+      }
+      note = [note, `В цени от ${REAL_BASE_YEAR} г.: ${showValue(m, real[yi])}${rd}`].filter(Boolean).join(' · ');
+    } else if (m.money && ctx.state.real && v != null && yi > 0 && m.values[yi - 1] != null && !m.pp) {
+      const real = toReal(m.values);
+      const d = ((real[yi] - real[yi - 1]) / Math.abs(real[yi - 1])) * 100;
+      note = [note, `Без инфлацията: ${d > 0 ? '▲' : d < 0 ? '▼' : '■'} ${fmt(Math.abs(d), 1)}% спрямо ${YEARS[yi - 1]}`].filter(Boolean).join(' · ');
+    }
     if (m.regional && m.cmp && m.cmp[yi] != null) note = [note, 'България: ' + showValue(m, m.cmp[yi])].filter(Boolean).join(' · ');
     else if (m.eu && m.eu[yi] != null) note = [note, (m.euLabel || 'ЕС') + ': ' + showValue(m, m.eu[yi])].filter(Boolean).join(' · ');
     const badge = m.regional ? `<span class="badge badge-region">${esc(ctx.regionName)}</span>`
@@ -89,14 +104,29 @@ function trendChart(page, M, ctx) {
       <div class="seg" role="group" aria-label="Показател">${page.order.map((k) =>
         `<button type="button" data-action="metric" data-key="${k}" aria-pressed="${k === key}">${esc(M[k].tab || M[k].label)}</button>`).join('')}</div>
     </div>
+    ${m.money ? realToggle(m, ctx) : ''}
     ${lineChart({
       values: m.values, cmp, selectedIndex: ctx.yi, suffix: m.suffix || '',
+      alt: m.money && ctx.state.real ? toReal(m.values) : null,
+      altLabel: `Без инфлацията — в цени от ${REAL_BASE_YEAR} г.`,
       show: (v) => showValue(m, v), title,
-      mainLabel: m.regional ? ctx.regionName : 'България',
+      mainLabel: (m.regional ? ctx.regionName : 'България') + (m.money && ctx.state.real ? ' — в цените на съответната година' : ''),
       cmpLabel: m.cmpLabel || m.euLabel || (m.cmp ? 'България' : 'ЕС-27'),
     })}
     <p class="source">Източник: ${esc(m.source)}.${missing.length ? ` Няма данни за ${missing.join(', ')} г.` : ''}${m.limit ? ' ' + esc(m.limit) : ''}</p>
   </section>`;
+}
+
+function realToggle(m, ctx) {
+  const on = ctx.state.real;
+  const text = on
+    ? `Зелената линия показва колко са тези суми в цените от ${REAL_BASE_YEAR} г. — т.е. каква част от ръста е реална и каква идва само от поскъпването. Изчислено с индекса на потребителските цени (ХИПЦ, Евростат).${m.realNote ? ' ' + m.realNote : ''}`
+    : 'Сумите са в цените на всяка година. Включете, за да видите колко са в днешни цени.';
+  return `
+    <div class="real-toggle">
+      <button type="button" data-action="real" aria-pressed="${on}"><span class="knob" aria-hidden="true"></span>Отчети инфлацията</button>
+      <p>${esc(text)}</p>
+    </div>`;
 }
 
 export function yearPicker(ctx) {

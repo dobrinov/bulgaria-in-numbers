@@ -2,7 +2,7 @@
 import './links.css';
 import { pageHero } from '../components/sectionPage.js';
 import { scatterChart } from '../lib/charts.js';
-import { YEARS, EUR, POPULATION, fmt, esc, correlation, strength, COLORS } from '../lib/format.js';
+import { YEARS, EUR, POPULATION, HICP_INDEX, fmt, esc, correlation, strength, COLORS } from '../lib/format.js';
 
 const ID = 'links';
 
@@ -24,8 +24,7 @@ const BALPCT = [-1.7, 0.1, 1.1, 1.7, 2.1, -3.8, -4.0, -2.9, -2.0, -3.0, -4.0];
 const DEBT = [23218, 27859, 25908, 24305, 24078, 29595, 33279, 37855, 42393, 48851, 68057];
 const POVERTY = [43.3, 41.0, 38.0, 33.0, 33.2, 33.5, 31.7, 32.2, 30.0, 30.3, 29.0];
 
-const PRICE = [100];
-for (let i = 1; i < YEARS.length; i++) PRICE.push(PRICE[i - 1] * (1 + HICP[i] / 100));
+const PRICE = HICP_INDEX;
 const REALW = WAGE.map((w, i) => (w / WAGE[0]) / (PRICE[i] / 100) * 100);
 const L = YEARS.length - 1;
 

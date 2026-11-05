@@ -46,3 +46,12 @@ test('корелация', () => {
   const { r } = correlation([1, 2, 3, 4], [2, 4, 6, 8]);
   assert.ok(Math.abs(r - 1) < 1e-9);
 });
+
+test('toReal преизчислява в цени от последната година', async () => {
+  const { toReal, HICP_INDEX, YEARS } = await import('../src/lib/format.js');
+  assert.equal(HICP_INDEX.length, YEARS.length);
+  const r = toReal([100, null, 100, 100, 100, 100, 100, 100, 100, 100, 100]);
+  assert.equal(r[10], 100);
+  assert.equal(r[1], null);
+  assert.ok(Math.abs(r[0] - 142.5) < 1e-9);
+});

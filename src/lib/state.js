@@ -20,12 +20,22 @@ function storeRegion(v) {
   }
 }
 
+const REAL_KEY = 'bgc-real';
+function readStoredReal() {
+  try {
+    return window.localStorage.getItem(REAL_KEY) !== '0';
+  } catch {
+    return true;
+  }
+}
+
 export const state = {
   route: 'home',
   year: null, // null = годината по подразбиране на страницата
   region: readStoredRegion(),
   metric: {}, // избран показател за графиката, по страница
   mapMetric: {}, // избран показател на картата, по страница
+  real: readStoredReal(), // показва сумите и без инфлацията (в цени от последната година)
   ui: {}, // свободно място за състояние на отделни раздели
   navOpen: false,
 };
@@ -55,6 +65,9 @@ export function update(patch) {
   const routeChanged = patch.route && patch.route !== state.route;
   Object.assign(state, patch);
   if ('region' in patch) storeRegion(patch.region);
+  if ('real' in patch) {
+    try { window.localStorage.setItem(REAL_KEY, patch.real ? '1' : '0'); } catch { /* без запазване */ }
+  }
   const target = hashFor(state.route, { region: state.region, year: state.year });
   if (window.location.hash !== target) window.history.replaceState(null, '', target);
   listeners.forEach((fn) => fn({ routeChanged }));

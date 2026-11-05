@@ -6,10 +6,21 @@ export const EUR = 1.95583; // фиксиран курс лев/евро
 // Население към 31.12 по години (НСИ). Използва се за изчисления „на човек“.
 export const POPULATION = [7153784, 7101859, 7050034, 7000039, 6951482, 6916548, 6838937, 6447710, 6445481, 6437360, 6423207];
 
+// Хармонизиран индекс на потребителските цени, средногодишен, 2015 = 100 (Евростат, prc_hicp_aind, INX_A_AVG).
+export const HICP_INDEX = [100, 98.68, 99.85, 102.48, 104.99, 106.27, 109.3, 123.52, 134.15, 137.63, 142.5];
+export const REAL_BASE_YEAR = YEARS[YEARS.length - 1];
+
+/** Суми в цени от последната година: стойност × индекс(последна) / индекс(година). */
+export function toReal(values) {
+  const last = HICP_INDEX[HICP_INDEX.length - 1];
+  return values.map((v, i) => (v == null || HICP_INDEX[i] == null ? null : (v * last) / HICP_INDEX[i]));
+}
+
 export const COLORS = {
   ink: '#0F1B2D',
   accent: '#1F4FD1',
   accentDark: '#163A9E',
+  real: '#0F766E',
   worse: '#B45309',
   muted: '#4A5568',
   grid: '#E3E7EE',
