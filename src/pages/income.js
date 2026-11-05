@@ -1,6 +1,7 @@
 // Доходи — Евростат, НСИ, НОИ.
 import { barList } from '../lib/charts.js';
 import { YEARS, EUR, fmt } from '../lib/format.js';
+import { sectorWagesSection, SECTOR_ACTIONS } from '../components/sectorWages.js';
 
 const HUND = YEARS.map(() => 100);
 // Средна пенсия, лв. (НОИ, средногодишна) и брой пенсионери.
@@ -20,6 +21,7 @@ export default {
     'БВП на човек е 66% от средния за ЕС (2024) спрямо 49% през 2015 г. — страната бавно догонва средното ниво.',
     'В риск от бедност или социално изключване са 29% от хората (2025) — най-малко за периода, но над средното за ЕС (20,9%).',
     'Минималната заплата е 551 € (2025), почти три пъти повече от 2015 г.',
+    'Държавните работодатели плащат средно 1 222 € на месец, частните — 1 178 € (2024). В държавните финанси и енергетика заплатите са с 50–56% по-високи от частните.',
   ],
   map: { metrics: ['wage', 'gdp'] },
   defaultYear: 2024,
@@ -70,7 +72,9 @@ export default {
       sub: 'Годишна промяна на индекса на цените на жилищата, %', source: 'Евростат, prc_hpi_a',
     },
   },
+  actions: { ...SECTOR_ACTIONS },
   sections: [
+    sectorWagesSection,
     ({ yi }) => {
       const wageE = WAGE[yi] / EUR;
       const rows = [
@@ -101,6 +105,7 @@ export default {
     { href: 'https://ec.europa.eu/eurostat/databrowser/view/prc_ppp_ind/default/table', title: 'Евростат — prc_ppp_ind', text: 'БВП и потребление на човек, ценово равнище' },
     { href: 'https://ec.europa.eu/eurostat/databrowser/view/ilc_peps01n/default/table', title: 'Евростат — ilc_peps01n, ilc_di12', text: 'Бедност и неравенство' },
     { href: 'https://ec.europa.eu/eurostat/databrowser/view/earn_mw_cur/default/table', title: 'Евростат — earn_mw_cur, prc_hpi_a', text: 'Минимална заплата, цени на жилищата' },
+    { href: 'https://www.nsi.bg/statistical-data/173/560', title: 'НСИ — наети лица и заплати по сектори', text: 'Държавни и частни работодатели по икономически дейности, 2020–2024 (Labour_2.1.1, Labour_2.2.1)' },
     { href: 'https://www.nssi.bg/wp-content/uploads/STATB42025.pdf', title: 'НОИ — статистически бюлетини', text: 'Пенсии и пенсионери' },
   ],
 };

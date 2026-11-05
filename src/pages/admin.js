@@ -3,6 +3,7 @@ import './admin.css';
 import { stackedBar } from '../lib/charts.js';
 import { POPULATION, YEARS, EUR, fmt, esc } from '../lib/format.js';
 import { PAY, PY, PUB, ALL, NAT_WAGE_BGN, perEmployee } from '../data/publicSector.js';
+import { sectorWagesSection, SECTOR_ACTIONS } from '../components/sectorWages.js';
 
 const POS = [137693, 132648, 139665, 141784, 142747, 142613, 143381, 143815, 143502, 145802, 145623];
 const PAYPCT = [9.3, 8.9, 9.1, 9.5, 10.0, 10.7, 11.0, 10.0, 10.5, 11.3, 12.3];
@@ -145,7 +146,8 @@ export default {
       source: 'Евростат, nama_10_a64_e и demo_gind (изчислено)',
     },
   },
-  sections: [(ctx) => `<div class="split">${splitSection(ctx)}${publicSection(ctx)}</div>`, costSection],
+  sections: [(ctx) => `<div class="split">${splitSection(ctx)}${publicSection(ctx)}</div>`, costSection, sectorWagesSection],
+  actions: { ...SECTOR_ACTIONS },
   method: [
     { title: 'Данните за 2015 г.', text: 'Докладът за 2015 г. отчита щатовете по различен начин и между 2015 и 2016 г. има скок от 7 842 места. Затова сравняваме от 2016 г.' },
     { title: 'Щатни ≠ заети', text: 'Щатните бройки са разрешените места. Заетите са реално попълнените. Двете числа са от годишния доклад на Министерския съвет и включват МВР.' },
@@ -154,6 +156,7 @@ export default {
   ],
   sourcesNote: 'Докладът за състоянието на администрацията се приема всяка пролет от Министерския съвет.',
   sources: [
+    { href: 'https://www.nsi.bg/statistical-data/173/560', title: 'НСИ — наети лица и заплати по сектори', text: 'Държавни и частни работодатели по икономически дейности, 2020–2024 (Labour_2.1.1, Labour_2.2.1)' },
     { href: 'https://iisda.government.bg/annual_report_file/703_4605', title: 'Доклад за състоянието на администрацията 2025', text: 'Щатни и заети места; докладите за 2015–2024 г. на gov.bg и iisda.government.bg' },
     { href: 'https://www.nsi.bg/sites/default/files/files/data/timeseries/Labour_1.1.5.xlsx', title: 'НСИ — служители в изпълнителната власт', text: 'Централна и териториална администрация' },
     { href: 'https://www.nsi.bg/sites/default/files/files/data/timeseries/Labour_2.1.1.xlsx', title: 'НСИ — наети в обществения сектор', text: 'Средногодишен брой, 2020–2024' },

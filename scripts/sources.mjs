@@ -95,6 +95,7 @@ export const EUROSTAT = [
 
 // Източници без API — обновяват се ръчно (или от Claude по подсказката в .claude/commands/update-data.md).
 export const MANUAL = [
+  { what: 'Наети и заплати по сектори, държавни/частни', where: 'НСИ, Labour_2.1.1.xlsx и Labour_2.2.1_BGN.xlsx (статистически данни → пазар на труда), годишно', files: ['src/data/sectors.js'], when: 'май–юни' },
   { what: 'Население към 31.12 (страна и области), раждания и умирания по области', where: 'НСИ — https://www.nsi.bg/statistical-data/206 (файлове Pop_6.1.1, Pop_6.1.7)', files: ['src/pages/population.js (pop)', 'src/data/oblasts.js', 'src/lib/format.js (POPULATION)'], when: 'април–юни' },
   { what: 'Изселили се българи', where: 'НСИ — Pop_5.8_Migration_DR_EN.xlsx', files: ['src/pages/population.js (emig)'], when: 'април–юни' },
   { what: 'Дефицит и дълг (окончателни), млн. лв./€', where: 'НСИ — нотификационни таблици (април предварителни, октомври окончателни)', files: ['src/pages/budget.js (bal, debt, BAL_BGN, DEBT_BGN)'], when: 'април и октомври' },
