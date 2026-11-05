@@ -49,6 +49,7 @@ export const EUROSTAT = [
 
   // Бюджет и дълг (НСИ публикува същите числа; Евростат се обновява по-късно)
   { page: 'budget', key: 'rev', dataset: 'gov_10a_main', params: { na_item: 'TR', sector: 'S13', unit: 'PC_GDP' } },
+  { page: 'budget', key: 'interest', dataset: 'gov_10a_main', params: { na_item: 'D41PAY', sector: 'S13', unit: 'MIO_EUR' } },
   { page: 'budget', key: 'exp', dataset: 'gov_10a_main', params: { na_item: 'TE', sector: 'S13', unit: 'PC_GDP' } },
   { page: 'budget', key: 'debtPct', dataset: 'gov_10dd_edpt1', params: { na_item: 'GD', sector: 'S13', unit: 'PC_GDP' } },
   { page: 'budget', key: 'balPct', dataset: 'gov_10dd_edpt1', params: { na_item: 'B9', sector: 'S13', unit: 'PC_GDP' } },
