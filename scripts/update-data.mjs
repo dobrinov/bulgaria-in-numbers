@@ -2,12 +2,12 @@
 // Проверява за нови или ревизирани данни на Евростат и пише отчет.
 //
 //   npm run update-data             → отчет в data/update-report.md (+ data/update-report.json)
-//   npm run update-data -- --apply  → също записва промените в src/pages/*.js
+//   npm run update-data -- --apply  → също записва промените в src/pages/*.js и src/data/*.js
 //
 // Само показатели от scripts/sources.mjs (EUROSTAT) се обновяват автоматично.
 // Останалите (НСИ, МВР, ВСС, НОИ…) се изброяват в отчета за ръчна проверка.
 import { registerHooks } from 'node:module';
-import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, readdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { EUROSTAT, MANUAL } from './sources.mjs';
@@ -98,34 +98,42 @@ const applied = [];
 if (APPLY) {
   const byPage = {};
   for (const r of results.filter((x) => x.status === 'changed')) (byPage[r.src.page] ||= []).push(r);
+  // Първо файлът на страницата, после общите данни в src/data (напр. publicSector.js).
+  const dataDir = path.join(ROOT, 'src/data');
+  const dataFiles = (await readdir(dataDir)).filter((f) => f.endsWith('.js')).map((f) => path.join(dataDir, f));
+  const texts = new Map();
+  const load = async (f) => { if (!texts.has(f)) texts.set(f, await readFile(f, 'utf8')); return texts.get(f); };
   for (const [pageId, rs] of Object.entries(byPage)) {
-    const file = path.join(ROOT, 'src/pages', pageId + '.js');
-    let text = await readFile(file, 'utf8');
+    const files = [path.join(ROOT, 'src/pages', pageId + '.js'), ...dataFiles];
     for (const r of rs) {
       const metric = pages[pageId].metrics[r.src.key];
       const oldArr = metric[r.field];
-      // Търси числов масив с дължина YEARS, който е равен на текущите стойности,
-      // евентуално в друга мерна единица (напр. млн. вместо млрд.): литерал × k = стойност.
-      const re = /\[((?:\s*(?:-?\d+(?:\.\d+)?|null)\s*,){10,}\s*(?:-?\d+(?:\.\d+)?|null)\s*)\]/g;
       let done = false;
-      text = text.replace(re, (whole, body) => {
-        if (done) return whole;
-        const raw = body.split(',').map((s) => s.trim());
-        const nums = raw.map((s) => (s === 'null' ? null : Number(s)));
-        if (nums.length !== oldArr.length) return whole;
-        const k = [1, 0.001, 1000, 100, 0.01].find((f) => nums.every((n, i) => (n == null && oldArr[i] == null) || (n != null && oldArr[i] != null && near(n * f, oldArr[i]))));
-        if (k == null) return whole;
-        done = true;
-        const decimals = Math.max(...raw.map((s) => (s.includes('.') ? s.split('.')[1].length : 0)));
-        const next = nums.slice();
-        for (const c of r.changes) next[YEARS.indexOf(c.year)] = Number((c.new / k).toFixed(decimals + (k === 1 ? 1 : 0)));
-        return `[${next.map((v) => (v == null ? 'null' : v)).join(', ')}]`;
-      });
+      for (const file of files) {
+        if (done) break;
+        // Търси числов масив с дължина YEARS, който е равен на текущите стойности,
+        // евентуално в друга мерна единица (напр. млн. вместо млрд.): литерал × k = стойност.
+        const re = /\[((?:\s*(?:-?\d+(?:\.\d+)?|null)\s*,){10,}\s*(?:-?\d+(?:\.\d+)?|null)\s*)\]/g;
+        const text = (await load(file)).replace(re, (whole, body) => {
+          if (done) return whole;
+          const raw = body.split(',').map((s) => s.trim());
+          const nums = raw.map((s) => (s === 'null' ? null : Number(s)));
+          if (nums.length !== oldArr.length) return whole;
+          const k = [1, 0.001, 1000, 100, 0.01].find((f) => nums.every((n, i) => (n == null && oldArr[i] == null) || (n != null && oldArr[i] != null && near(n * f, oldArr[i]))));
+          if (k == null) return whole;
+          done = true;
+          const decimals = Math.max(...raw.map((s) => (s.includes('.') ? s.split('.')[1].length : 0)));
+          const next = nums.slice();
+          for (const c of r.changes) next[YEARS.indexOf(c.year)] = Number((c.new / k).toFixed(decimals + (k === 1 ? 1 : 0)));
+          return `[${next.map((v) => (v == null ? 'null' : v)).join(', ')}]`;
+        });
+        texts.set(file, text);
+      }
       if (done) applied.push(r.label);
       else r.applyNote = 'Масивът не е намерен (стойностите се изчисляват) — обновете ръчно.';
     }
-    await writeFile(file, text);
   }
+  for (const [file, text] of texts) await writeFile(file, text);
 }
 
 // Отчет

@@ -3,6 +3,7 @@ import './budget.css';
 import { barList, stackedBar } from '../lib/charts.js';
 import { EUR, fmt, esc, COLORS } from '../lib/format.js';
 import { hashFor } from '../lib/state.js';
+import { PY, PUB, NAT_WAGE_BGN, perEmployee } from '../data/publicSector.js';
 
 const YEARS = [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025];
 
@@ -115,7 +116,8 @@ const SPEND_VIEWS = {
     tab: 'По вид разход', years: TY, rows: TYPE_ROWS, tot: EXP_MEUR, totPct: EXP_PCT,
     sub: 'Разходи на сектор „Държавно управление“ по вид — за какво отиват парите: заплати, пенсии, издръжка, инвестиции, лихви.',
     source: 'Евростат, gov_10a_main (D1, D62, D632, P2, P51G, D3, D41). „Други“ е разликата до общите разходи.',
-    extra: `Заплатите тук са на всички наети от държавата — учители, лекари в държавни болници, полицаи, военни и администрация. Колко струва средно един нает вижте в <a href="${hashFor('admin')}">Администрация</a>.`,
+    extra: `Заплатите са на всички наети от държавата — учители, лекари в държавни болници, полицаи, военни и администрация. Повече за администрацията — в <a href="${hashFor('admin')}">Администрация</a>.`,
+    callout: payCallout,
   },
   fn: {
     tab: 'По предназначение', years: CY, rows: FN, tot: TOT, totPct: TOTPCT,
@@ -124,6 +126,31 @@ const SPEND_VIEWS = {
     extra: 'Лихвите са цената на дълга. Връщането на самия дълг (главницата) не е разход — то се плаща основно с нов дълг, затова не е в тази графика. Вижте показателите „Лихви по дълга“ и „Върнат дълг“ по-горе.',
   },
 };
+
+/** Колко струва средно един нает от държавата за избраната година (или най-близката с данни). */
+function payCallout(year) {
+  const j = PY.indexOf(year) >= 0 ? PY.indexOf(year) : year < PY[0] ? 0 : PY.length - 1;
+  const y = PY[j];
+  const i = TY.indexOf(y);
+  const per = perEmployee(j);
+  const nat = NAT_WAGE_BGN[j] / EUR;
+  const other = y !== year ? `<p class="small budget-warn">Броят наети за ${year} г. още не е публикуван — показваме ${y} г.</p>` : '';
+  return `
+    <div class="pay-callout">
+      <h3>Колко струва средно един нает от държавата, ${y} г.</h3>
+      ${other}
+      <dl class="pay-math num">
+        <div><dt>Заплати и осигуровки</dt><dd>${fmt(D1[i] / 1000, 2)} млрд. €</dd></div>
+        <div class="op" aria-hidden="true">÷</div>
+        <div><dt>Наети в обществения сектор</dt><dd>${fmt(PUB[j], 0)}</dd></div>
+        <div class="op" aria-hidden="true">÷</div>
+        <div><dt>Месеца</dt><dd>12</dd></div>
+        <div class="op" aria-hidden="true">≈</div>
+        <div class="res"><dt>На един нает на месец</dt><dd>${fmt(per, 0)} €</dd></div>
+      </dl>
+      <p class="small muted">За сравнение: средната брутна заплата в страната е ${fmt(nat, 0)} €. Сумата на един нает включва и около 19% осигуровки за сметка на работодателя, затова не е равна на брутната заплата. Броят наети (НСИ) включва и държавните предприятия, затова резултатът е приблизителен.</p>
+    </div>`;
+}
 
 function cofogSection(ctx) {
   const viewKey = (ctx.ui && ctx.ui.spendView) || 'type';
@@ -160,6 +187,7 @@ function cofogSection(ctx) {
           sub: fmt(sh * V.totPct[ci], 1) + '% от БВП' };
       }), { max: shareMax })}
     </div>
+    ${V.callout ? V.callout(Y[ci]) : ''}
     <p class="small muted">${V.extra}</p>
     <p class="source">Източник: ${esc(V.source)}</p>
   </section>`;
@@ -211,7 +239,7 @@ function annualSection() {
   <section class="card" aria-labelledby="yr-h">
     <div class="card-head"><div>
       <h2 id="yr-h">Промяна на дълга по години</h2>
-      <p class="muted">Разлика в дълга спрямо края на предходната година и правителствата, управлявали през годината.</p>
+      <p class="muted">С колко милиарда евро се е променил дългът спрямо края на предходната година и кои правителства са управлявали през годината.</p>
     </div></div>
     <ol class="annual-rows">${ALLOC.annual.map((a) => `
       <li>
@@ -220,7 +248,7 @@ function annualSection() {
           <span class="bar" aria-hidden="true"><span style="width:${((Math.abs(a.v) / aMax) * 100).toFixed(1)}%;background:${a.v > 0 ? COLORS.worse : 'var(--accent)'}"></span></span>
           <span class="annual-govs">${esc(a.govs)}</span>
         </div>
-        <strong class="num ${tone(a.v)}">${sgn(a.v, dd(a.v))}</strong>
+        <strong class="num ${tone(a.v)}">${sgn(a.v, dd(a.v))} млрд. €</strong>
       </li>`).join('')}</ol>
   </section>`;
 }

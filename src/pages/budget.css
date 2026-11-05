@@ -22,11 +22,20 @@
 .cofog-detail .bar-head > span:last-child { white-space: nowrap; }
 .gov-table th:nth-child(3), .gov-table td:nth-child(3) { width: 40%; }
 .annual-rows { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
-.annual-rows li { display: grid; grid-template-columns: 48px minmax(0, 1fr) 84px; align-items: center; gap: 12px; font-size: 14px; }
+.annual-rows li { display: grid; grid-template-columns: 48px minmax(0, 1fr) 120px; align-items: center; gap: 12px; font-size: 14px; }
 .annual-rows li > span:first-child { font-weight: 700; }
+.annual-rows li > strong { white-space: nowrap; text-align: right; }
 .annual-rows li > div { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .annual-rows .bar { height: 12px; border-radius: 4px; }
 .annual-govs { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .annual-rows strong { text-align: right; }
 .annual-rows .tone-bad { color: var(--worse-text); }
 .annual-rows .tone-good { color: var(--accent-dark); }
+.pay-callout { border: 1px solid var(--line-soft); background: #F7F9FC; border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; }
+.pay-callout h3 { font-size: 17px; font-weight: 700; }
+.pay-math { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px 14px; margin: 0; }
+.pay-math > div { display: flex; flex-direction: column; gap: 2px; }
+.pay-math dt { font-size: 12px; color: var(--ink-2); }
+.pay-math dd { margin: 0; font-size: 20px; font-weight: 700; color: var(--ink); }
+.pay-math .op { font-size: 20px; color: var(--muted); padding-bottom: 2px; }
+.pay-math .res dd { color: var(--accent); font-size: 24px; }
