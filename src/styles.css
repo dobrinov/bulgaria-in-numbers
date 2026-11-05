@@ -246,3 +246,24 @@ table.data .best { color: var(--accent-dark); font-weight: 700; }
   .sw-rows li.sw-axis > div:first-child, .sw-rows li.sw-axis .sw-vals { display: none; }
   .sw-vals { grid-template-columns: repeat(3, auto); justify-content: start; text-align: left; }
 }
+
+/* Заплати по области (src/components/payByFunction.js) */
+.pbf .summary-facts { background: #F7F9FC; border: 1px solid var(--line-soft); border-radius: 12px; padding: 14px 18px; }
+.pbf .summary-facts ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; font-size: 15px; }
+.pbf-rows { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.pbf-rows li { display: grid; grid-template-columns: minmax(160px, 260px) minmax(0, 1fr) 130px 96px 90px; gap: 14px; align-items: center; padding: 8px 0; border-top: 1px solid var(--line-soft); font-size: 14px; }
+.pbf-rows li.pbf-head { border-top: 0; font-size: 12px; color: var(--muted); padding-bottom: 4px; }
+.pbf-rows li.is-child { padding: 4px 0; border-top: 0; font-size: 13px; }
+.pbf-rows li.is-child .pbf-name { padding-left: 18px; color: var(--ink-2); }
+.pbf-rows li.is-child .pbf-name::before { content: '└ '; color: var(--muted); }
+.pbf-rows .bar { display: block; height: 10px; background: var(--line-soft); border-radius: 5px; overflow: hidden; }
+.pbf-rows .bar > span { display: block; height: 100%; border-radius: 5px; }
+.pbf-rows li.is-child .bar { height: 6px; }
+.pbf-val, .pbf-growth { display: flex; flex-direction: column; text-align: right; }
+.pbf-val small, .pbf-growth small { font-size: 12px; color: var(--muted); }
+.pbf-spark { width: 90px; height: 26px; }
+@media (max-width: 760px) {
+  .pbf-rows li { grid-template-columns: minmax(0, 1fr) auto auto; }
+  .pbf-rows li .pbf-name { grid-column: 1 / -1; }
+  .pbf-rows li.pbf-head, .pbf-spark { display: none; }
+}
