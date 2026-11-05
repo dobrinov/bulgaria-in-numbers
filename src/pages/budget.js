@@ -2,6 +2,7 @@
 import './budget.css';
 import { barList, stackedBar } from '../lib/charts.js';
 import { EUR, fmt, esc, COLORS } from '../lib/format.js';
+import { hashFor } from '../lib/state.js';
 
 const YEARS = [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025];
 
@@ -88,35 +89,79 @@ const FN = [
 const TOT = [18494.9, 16952.1, 18265.4, 20770.0, 22343.5, 25595.5, 29625.6, 35541.6, 36724.0, 41059.6];
 const TOTPCT = [40.4, 34.8, 34.8, 37.1, 36.5, 41.4, 41.5, 41.3, 38.9, 39.2];
 
+// Евростат gov_10a_main, S13, млн. €, 2015–2025 — разходи по икономически вид.
+const TY = [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025];
+const D1 = [4268.2, 4341.1, 4798.2, 5327.5, 6140.9, 6641.9, 7881.8, 8656.7, 9989.8, 11886.3, 14357.5];
+const D62 = [5427, 5628.2, 5814.9, 6138.7, 6507.9, 7213, 8274.3, 10330.3, 11764.5, 13406.5, 14909.2];
+const D632 = [900.5, 1052.2, 1190.6, 1173, 1335.7, 1547.2, 1784.2, 2249.3, 2439.9, 2438.6, 3219.7];
+const P2 = [2383.2, 2326.5, 2517.9, 2708.1, 2801.4, 3172.8, 3690.9, 4448.3, 4606.7, 4875.6, 5648.5];
+const D3 = [830.5, 679.8, 590.4, 1210.7, 1488.3, 2057, 2667.3, 4563.3, 2288.7, 2311.8, 2094.7];
+const P51G = [3010, 1298.1, 1201.2, 1724.6, 2059.6, 2053.8, 1933.5, 2033.1, 3608, 3311.3, 5574.9];
+const TYPE_ROWS = [
+  ['Заплати и осигуровки на наетите от държавата', '#163A9E', D1],
+  ['Пенсии и социални помощи', '#5B84E8', D62],
+  ['Лечение и услуги, платени от държавата (здравна каса, лекарства)', '#A9C1F5', D632],
+  ['Стоки и услуги (издръжка: ток, ремонти, консумативи)', '#0F1B2D', P2],
+  ['Инвестиции (пътища, сгради, техника)', '#E8A867', P51G],
+  ['Субсидии за фирми', '#6B3A0A', D3],
+  ['Лихви по държавния дълг', '#9F1239', INTEREST],
+];
+TYPE_ROWS.push(['Други (трансфери към ЕС и чужбина, капиталови трансфери)', '#C5CCD8',
+  EXP_MEUR.map((t, i) => t - TYPE_ROWS.reduce((sum, row) => sum + row[2][i], 0))]);
+const EXP_PCT = [40.4, 34.8, 34.8, 37.0, 36.5, 41.3, 41.5, 41.2, 38.6, 39.0, 42.1];
+
+const SPEND_VIEWS = {
+  type: {
+    tab: 'По вид разход', years: TY, rows: TYPE_ROWS, tot: EXP_MEUR, totPct: EXP_PCT,
+    sub: 'Разходи на сектор „Държавно управление“ по вид — за какво отиват парите: заплати, пенсии, издръжка, инвестиции, лихви.',
+    source: 'Евростат, gov_10a_main (D1, D62, D632, P2, P51G, D3, D41). „Други“ е разликата до общите разходи.',
+    extra: `Заплатите тук са на всички наети от държавата — учители, лекари в държавни болници, полицаи, военни и администрация. Колко струва средно един нает вижте в <a href="${hashFor('admin')}">Администрация</a>.`,
+  },
+  fn: {
+    tab: 'По предназначение', years: CY, rows: FN, tot: TOT, totPct: TOTPCT,
+    sub: 'Разходи на сектор „Държавно управление“ по функции — за какви дейности: всяка включва и заплатите, и издръжката, и инвестициите в нея.',
+    source: 'Евростат, gov_10a_exp (COFOG; лихвите са функция 01.7 „Операции с публичния дълг“). Данните по функции за 2025 г. още не са публикувани.',
+    extra: 'Лихвите са цената на дълга. Връщането на самия дълг (главницата) не е разход — то се плаща основно с нов дълг, затова не е в тази графика. Вижте показателите „Лихви по дълга“ и „Върнат дълг“ по-горе.',
+  },
+};
+
 function cofogSection(ctx) {
-  const ci = CY.indexOf(ctx.year) < 0 ? CY.length - 1 : CY.indexOf(ctx.year);
-  const note = ctx.year > 2024 ? `Данните по функции за ${ctx.year} г. още не са публикувани — показваме 2024 г.` : '';
-  const shareMax = Math.max(...FN.map((f) => f[2][ci] / TOT[ci]));
+  const viewKey = (ctx.ui && ctx.ui.spendView) || 'type';
+  const V = SPEND_VIEWS[viewKey];
+  const Y = V.years;
+  const last = Y[Y.length - 1];
+  const ci = Y.indexOf(ctx.year) < 0 ? Y.length - 1 : Y.indexOf(ctx.year);
+  const note = ctx.year > last ? `Данните за ${ctx.year} г. още не са публикувани — показваме ${last} г.` : '';
+  const shareMax = Math.max(...V.rows.map((f) => f[2][ci] / V.tot[ci]));
   return `
   <section class="card" aria-labelledby="fn-h">
-    <div class="card-head"><div>
-      <h2 id="fn-h">За какво харчи държавата, 2015–2024</h2>
-      <p class="muted">Разходи на сектор „Държавно управление“ по функции — дял от всички разходи за годината.</p>
-    </div></div>
-    <ul class="legend budget-legend">${FN.map(([name, color]) => `<li><i class="sw" style="background:${color}"></i>${esc(name)}</li>`).join('')}</ul>
-    <ol class="cofog-rows">${CY.map((y, i) => `
+    <div class="card-head">
+      <div>
+        <h2 id="fn-h">За какво харчи държавата, ${Y[0]}–${last}</h2>
+        <p class="muted">${esc(V.sub)}</p>
+      </div>
+      <div class="seg" role="group" aria-label="Изглед">${Object.entries(SPEND_VIEWS).map(([k, v]) =>
+        `<button type="button" data-action="spend-view" data-view="${k}" aria-pressed="${k === viewKey}">${esc(v.tab)}</button>`).join('')}</div>
+    </div>
+    <ul class="legend budget-legend">${V.rows.map(([name, color]) => `<li><i class="sw" style="background:${color}"></i>${esc(name)}</li>`).join('')}</ul>
+    <ol class="cofog-rows">${Y.map((y, i) => `
       <li${y === ctx.year ? ' class="is-on"' : ''}>
         <span class="num">${y}</span>
-        ${stackedBar(FN.map(([name, color, xs]) => ({ value: xs[i], color, label: name })), 24)}
-        <span class="num">${fmt(TOT[i] / 1000, 1)} млрд. €</span>
+        ${stackedBar(V.rows.map(([name, color, xs]) => ({ value: Math.max(0, xs[i]), color, label: name })), 24)}
+        <span class="num">${fmt(V.tot[i] / 1000, 1)} млрд. €</span>
       </li>`).join('')}</ol>
     <div class="cofog-detail">
-      <h3>Разбивка за ${CY[ci]} г.</h3>
+      <h3>Разбивка за ${Y[ci]} г.</h3>
       ${note ? `<p class="small budget-warn">${esc(note)}</p>` : ''}
-      ${barList(FN.map(([name, color, xs]) => {
-        const s = xs[ci] / TOT[ci];
-        return { label: name, swatch: color, color, value: s,
-          display: `<strong>${fmt(s * 100, 1)}%</strong> · ${fmt(xs[ci] / 1000, 2)} млрд. €`,
-          sub: fmt(s * TOTPCT[ci], 1) + '% от БВП' };
+      ${barList(V.rows.map(([name, color, xs]) => {
+        const sh = xs[ci] / V.tot[ci];
+        return { label: name, swatch: color, color, value: sh,
+          display: `<strong>${fmt(sh * 100, 1)}%</strong> · ${fmt(xs[ci] / 1000, 2)} млрд. €`,
+          sub: fmt(sh * V.totPct[ci], 1) + '% от БВП' };
       }), { max: shareMax })}
     </div>
-    <p class="small muted">Лихвите са цената на дълга. Връщането на самия дълг (главницата) не е разход — то се плаща основно с нов дълг, затова не е в тази графика. Вижте показателите „Лихви по дълга“ и „Върнат дълг“ по-горе.</p>
-    <p class="source">Източник: Евростат, gov_10a_exp (COFOG; лихвите са функция 01.7 „Операции с публичния дълг“). Данните по функции за 2025 г. още не са публикувани.</p>
+    <p class="small muted">${V.extra}</p>
+    <p class="source">Източник: ${esc(V.source)}</p>
   </section>`;
 }
 
@@ -243,6 +288,9 @@ export default {
     },
   },
   sections: [cofogSection, govSection, annualSection],
+  actions: {
+    'spend-view': (el, { state, update }) => update({ ui: { ...state.ui, budget: { ...(state.ui.budget || {}), spendView: el.dataset.view } } }),
+  },
   method: [
     { title: 'Дефицит и излишък', text: 'Салдото на бюджета е приходи минус разходи на целия сектор „Държавно управление“ по методологията на ЕС. Минус е дефицит, плюс — излишък. Таванът по правилата на ЕС е 3% дефицит.' },
     { title: 'Как разпределяме дълга', text: 'Годишната промяна на дълга се разделя между правителствата пропорционално на дните им на власт през годината. Точното разпределение изисква месечните данни на Министерството на финансите.' },
