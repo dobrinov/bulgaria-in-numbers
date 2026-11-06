@@ -127,6 +127,17 @@ const SPEND_VIEWS = {
   },
 };
 
+/** Връзка към обяснението на проектобюджета за 2027 г. (отделна статична страница). */
+function dummiesSection() {
+  return `
+  <a class="dummies-promo" href="./budget-2027-for-dummies.html">
+    <span class="dummies-tag">Ново · Проект</span>
+    <strong>Бюджет 2027 for dummies</strong>
+    <span>Проектобюджетът за 2027 г. с човешки думи: дефицит 4,3%, дълг 47,1 млрд. €, новите данъци и къде отиват парите.</span>
+    <span class="dummies-go">Прочетете →</span>
+  </a>`;
+}
+
 /** Колко струва средно един нает от държавата за избраната година (или най-близката с данни). */
 function payCallout(year) {
   const j = PY.indexOf(year) >= 0 ? PY.indexOf(year) : year < PY[0] ? 0 : PY.length - 1;
@@ -315,7 +326,7 @@ export default {
       limit: 'Министерството на финансите не публикува тези данни в машинно четим вид; за 2015–2017 и 2022 г. няма данни в достъпните отчети.',
     },
   },
-  sections: [cofogSection, govSection, annualSection],
+  sections: [dummiesSection, cofogSection, govSection, annualSection],
   actions: {
     'spend-view': (el, { state, update }) => update({ ui: { ...state.ui, budget: { ...(state.ui.budget || {}), spendView: el.dataset.view } } }),
   },

@@ -39,3 +39,12 @@
 .pay-math dd { margin: 0; font-size: 20px; font-weight: 700; color: var(--ink); }
 .pay-math .op { font-size: 20px; color: var(--muted); padding-bottom: 2px; }
 .pay-math .res dd { color: var(--accent); font-size: 24px; }
+
+/* Връзка към „Бюджет 2027 for dummies“ */
+.dummies-promo { display: flex; flex-direction: column; gap: 6px; padding: 22px 24px; border-radius: var(--radius); background: #FFE11A; color: #111111; border: 3px solid #111111; text-decoration: none; }
+.dummies-promo:hover { background: #FFD400; }
+.dummies-promo:focus-visible { outline: 3px solid #1E9C8C; outline-offset: 3px; }
+.dummies-promo strong { font-size: 24px; font-weight: 800; }
+.dummies-promo span { font-size: 16px; max-width: 760px; }
+.dummies-tag { align-self: flex-start; background: #111111; color: #FFE11A; font-size: 12px !important; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 3px 10px; border-radius: 6px; }
+.dummies-go { font-weight: 700; }
