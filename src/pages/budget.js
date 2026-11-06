@@ -133,7 +133,7 @@ function dummiesSection() {
   <a class="dummies-promo" href="./budget-2027-for-dummies.html">
     <span class="dummies-tag">Ново · Проект</span>
     <strong>Бюджет 2027 for dummies</strong>
-    <span>Проектобюджетът за 2027 г. с човешки думи: дефицит 4,3%, дълг 47,1 млрд. €, новите данъци и къде отиват парите.</span>
+    <span>Проектобюджетът за 2027 г. с човешки думи: дефицит 4,2%, дълг 47,0 млрд. €, новите данъци и къде отиват парите.</span>
     <span class="dummies-go">Прочетете →</span>
   </a>`;
 }
