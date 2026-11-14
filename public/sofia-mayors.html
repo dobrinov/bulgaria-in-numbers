@@ -15,7 +15,7 @@
 <meta property="og:image" content="https://dobrinov.github.io/bulgaria-in-numbers/og-sofia-mayors.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Гербът на София и надпис „Кой как управлява София“ с оценките на четиримата кмета">
+<meta property="og:image:alt" content="Гербът на София">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Кой как управлява София">
 <meta name="twitter:description" content="Четирима кмета и осем общински съвета, оценени по документи и данни.">
@@ -395,21 +395,25 @@
       '</div>';
   }
 
+  // Обща стълбовидна графика: колоните са оцветени според кмета, управлявал тогава.
+  function fmt(v) { return typeof v === 'number' && v % 1 ? String(v).replace('.', ',') : String(v); }
+  function chartHtml(s) {
+    var max = Math.max.apply(null, s.pts.map(function (p) { return p[1] || 0; }));
+    return '<div class="chart-head"><h3>' + s.title + '</h3><div class="legend">' + M.map(function (m) { return '<span><i style="background:' + m.color + '"></i>' + m.short + '</span>'; }).join('') + '</div></div>' +
+      '<div class="plot"><div class="bars" role="img" aria-label="' + s.title + ': ' + s.pts.map(function (p) { return p[0] + ' — ' + (p[1] === null ? 'няма данни' : fmt(p[1]) + s.unit); }).join('; ') + '">' +
+        s.pts.map(function (p) {
+          if (p[1] === null) return '<div><b>н.д.</b><i class="nd"></i></div>';
+          return '<div><b>' + fmt(p[1]) + s.unit + '</b><i style="height:' + Math.max(4, Math.round(p[1] / max * 220)) + 'px;background:' + MC[p[2]] + '"></i></div>';
+        }).join('') +
+      '</div><div class="xs">' + s.pts.map(function (p) { return '<span>' + p[0] + '</span>'; }).join('') + '</div></div>' +
+      '<p>' + s.caption + '</p><p class="small muted">Източник: ' + s.source + '</p>';
+  }
+
   function renderChart() {
     $('series').innerHTML = Object.keys(SERIES).map(function (k) {
       return '<button type="button" class="pill" data-ind="' + k + '" aria-pressed="' + (k === st.ind) + '">' + SERIES[k].label + '</button>';
     }).join('');
-    var s = SERIES[st.ind];
-    var max = Math.max.apply(null, s.pts.map(function (p) { return p[1] || 0; }));
-    $('chart').innerHTML =
-      '<div class="chart-head"><h3>' + s.title + '</h3><div class="legend">' + M.map(function (m) { return '<span><i style="background:' + m.color + '"></i>' + m.short + '</span>'; }).join('') + '</div></div>' +
-      '<div class="plot"><div class="bars" role="img" aria-label="' + s.title + ': ' + s.pts.map(function (p) { return p[0] + ' — ' + (p[1] === null ? 'няма данни' : p[1] + s.unit); }).join('; ') + '">' +
-        s.pts.map(function (p) {
-          if (p[1] === null) return '<div><b>н.д.</b><i class="nd"></i></div>';
-          return '<div><b>' + p[1] + s.unit + '</b><i style="height:' + Math.max(4, Math.round(p[1] / max * 220)) + 'px;background:' + MC[p[2]] + '"></i></div>';
-        }).join('') +
-      '</div><div class="xs">' + s.pts.map(function (p) { return '<span>' + p[0] + '</span>'; }).join('') + '</div></div>' +
-      '<p>' + s.caption + '</p><p class="small muted">Източник: ' + s.source + '</p>';
+    $('chart').innerHTML = chartHtml(SERIES[st.ind]);
   }
 
   document.addEventListener('click', function (e) {
