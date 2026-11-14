@@ -56,6 +56,13 @@ export default {
     </div>
   </section>
 
+  <a class="dummies-promo" href="./sofia-mayors.html">
+    <span class="dummies-tag">Ново · София</span>
+    <strong>Кметовете и СОС на София, 1995–2026</strong>
+    <span>Четирима кмета и осем общински съвета, оценени по документи и данни: какво свърши всеки добре и зле, как бяха разпределени 61-те мандата и какво показват одитите на Сметната палата.</span>
+    <span class="dummies-go">Прочетете →</span>
+  </a>
+
   <section class="card" aria-labelledby="facts-h">
     <div class="card-head">
       <div><h2 id="facts-h">Какво показват данните, 2015 → 2025</h2></div>
