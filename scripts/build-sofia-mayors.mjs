@@ -163,7 +163,7 @@ const ledeRest = lede.slice(cut + 2);
 
 const short = (t) => t.replace(/\s*[:(—].*$/, '').trim();
 // Кратки етикети за менюто, по реда на разделите (заглавията са цели изречения).
-const NAV_LABELS = ['Оценки', 'Софиянски', 'Борисов', 'Фандъкова', 'Терзиев', 'Съветите', 'Данни', 'Непроверено', 'Заключение', 'Източници'];
+const NAV_LABELS = ['Оценки', 'Софиянски', 'Борисов', 'Фандъкова', 'Терзиев', 'Съветите', 'Данни', 'Вода и парно', 'Непроверено', 'Заключение', 'Източници'];
 if (toc.length !== NAV_LABELS.length) throw new Error(`menu has ${NAV_LABELS.length} labels but the report has ${toc.length} sections`);
 const nav = toc.map(([id, t], k) => `<a href="#${id}" title="${esc(t)}">${NAV_LABELS[k]}</a>`).join('');
 
