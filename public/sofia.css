@@ -23,6 +23,13 @@ section[id], h2[id], h3[id] { scroll-margin-top: 72px; }
 .head-links { display: flex; flex-wrap: wrap; gap: 2px; }
 .head-links a { color: #FFFFFF; font-weight: 500; font-size: 15px; text-decoration: none; padding: 12px; }
 .head-links a:hover { color: var(--gold); }
+.head-links .sm { display: none; }
+@media (max-width: 640px) {
+  .head-links { flex-wrap: nowrap; gap: 0; margin-left: -10px; }
+  .head-links a { padding: 12px 10px; white-space: nowrap; }
+  .head-links .lg, .head-links .opt { display: none; }
+  .head-links .sm { display: inline; }
+}
 .hero { display: flex; flex-wrap: wrap; align-items: center; gap: 24px 32px; padding: 20px 0 40px; }
 .coa { width: 132px; height: auto; flex: 0 0 auto; }
 .hero-text { flex: 1 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
