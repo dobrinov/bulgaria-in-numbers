@@ -155,8 +155,17 @@ for (const m of mayors) {
 const badgeCount = (html.match(/class="ev ev-/g) || []).length;
 if (badgeCount < 100) throw new Error(`only ${badgeCount} evidence badges — check the Доказателство column and labels`);
 
+// Резюмето: показваме първото изречение, останалото се разгъва.
+const cut = lede.search(/\.\s(?=[А-ЯA-Z])/);
+if (cut < 40) throw new Error('could not split the summary after its first sentence');
+const ledeFirst = lede.slice(0, cut + 1);
+const ledeRest = lede.slice(cut + 2);
+
 const short = (t) => t.replace(/\s*[:(—].*$/, '').trim();
-const nav = toc.map(([id, t]) => `<a href="#${id}">${esc(short(t))}</a>`).join('');
+// Кратки етикети за менюто, по реда на разделите (заглавията са цели изречения).
+const NAV_LABELS = ['Оценки', 'Софиянски', 'Борисов', 'Фандъкова', 'Терзиев', 'Съветите', 'Данни', 'Непроверено', 'Заключение', 'Източници'];
+if (toc.length !== NAV_LABELS.length) throw new Error(`menu has ${NAV_LABELS.length} labels but the report has ${toc.length} sections`);
+const nav = toc.map(([id, t], k) => `<a href="#${id}" title="${esc(t)}">${NAV_LABELS[k]}</a>`).join('');
 
 const page = `<!doctype html>
 <html lang="bg">
@@ -188,11 +197,17 @@ const page = `<!doctype html>
 <link rel="stylesheet" href="./sofia.css">
 <style>
 .meta{margin:0;color:#B9B7AE;font-size:15px}
-.toc{position:sticky;top:0;z-index:5;background:#FFFFFF;border-bottom:2px solid var(--ink);overflow-x:auto;white-space:nowrap}
-.toc .wrap{display:flex;gap:4px;padding-top:8px;padding-bottom:8px}
+.toc{position:sticky;top:0;z-index:5;background:#FFFFFF;border-bottom:2px solid var(--ink)}
+.toc .wrap{display:flex;flex-wrap:wrap;gap:2px;padding-top:6px;padding-bottom:6px}
+@media (max-width:640px){.toc{overflow-x:auto}.toc .wrap{flex-wrap:nowrap;white-space:nowrap}}
 .toc a{display:inline-flex;align-items:center;min-height:40px;font-weight:700;font-size:14px;text-decoration:none;padding:0 12px;border-radius:9px}
 .toc a:hover{background:var(--ink);color:#FFFFFF}
-.lede{font-size:19px;line-height:1.6;margin:36px 0 0;padding:24px;background:var(--card);border:2px solid var(--ink);border-radius:16px}
+.report .lede{margin:40px 0 0;padding:20px 24px;background:var(--card);border:2px solid var(--ink);border-radius:16px;font-size:17px;line-height:1.6}
+.lede summary{list-style:none;cursor:pointer}.lede summary::-webkit-details-marker{display:none}
+.lede .lede-k{display:block;margin-bottom:6px;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--mut)}
+.lede .lede-more{display:inline-flex;align-items:center;gap:6px;min-height:44px;margin-top:6px;font-weight:700;color:var(--c-t);text-decoration:underline;text-underline-offset:3px}
+.lede .lede-more::after{content:"↓"}.lede[open] .lede-more{display:none}
+.report .lede p{margin:12px 0 0;max-width:none}
 .report h2{font-weight:900;font-size:clamp(28px,3.4vw,40px);line-height:1.1;letter-spacing:-.5px;margin:72px 0 16px;text-wrap:balance}
 .report h3{font-weight:700;font-size:22px;line-height:1.25;margin:36px 0 12px}
 .report h3.good{color:var(--good)}.report h3.bad{color:var(--bad)}
@@ -235,7 +250,7 @@ i.t-hi,i.t-mid{background:var(--good)}i.t-low{background:var(--warn)}i.t-bad{bac
 .back-cta{margin-top:56px;background:var(--ink);color:#FFFFFF;border-radius:16px;padding:28px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:20px}
 .back-cta h2{margin:0;font-size:26px;font-weight:900}
 .back-cta p{margin:6px 0 0;color:#DCDAD0}
-@media (max-width:640px){.srow{grid-template-columns:1fr;gap:8px}.lede{font-size:17px;padding:16px}}
+@media (max-width:640px){.srow{grid-template-columns:1fr;gap:8px}.report .lede{font-size:16px;padding:16px}}
 @media print{.toc,.back-cta{display:none}}
 </style>
 </head>
@@ -259,7 +274,7 @@ i.t-hi,i.t-mid{background:var(--good)}i.t-low{background:var(--warn)}i.t-bad{bac
 </header>
 <nav class="toc" aria-label="Съдържание"><div class="wrap">${nav}</div></nav>
 <main class="wrap report">
-<p class="lede">${lede}</p>
+<details class="lede"><summary><span class="lede-k">Накратко</span>${ledeFirst}<br><span class="lede-more">Прочетете цялото резюме</span></summary><p>${ledeRest}</p></details>
 ${html}
 <section class="back-cta">
   <div><h2>По-кратко и интерактивно</h2><p>Линия на времето с кметовете, мандатите в СОС квадрат по квадрат и графики по години.</p></div>
