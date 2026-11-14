@@ -1,0 +1,78 @@
+/* Общ стил за страниците за София: интерактивния преглед и пълния доклад. */
+:root {
+  --bg: #FFFDF4; --ink: #111111; --mut: #4A4A44; --line: #E4DFC9; --soft: #F7F4E7; --track: #EFEBDA;
+  --gold: #FFD23F; --crimson: #8A1538; --good: #0F6B2E; --bad: #B3261E; --warn: #C98A00; --card: #FFFFFF;
+  --c-s: #D9481F; --c-b: #F2B705; --c-f: #3E8E3A; --c-t: #2F6FB0;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 17px/1.55 Rubik, Arial, sans-serif; overflow-x: hidden; }
+a { color: inherit; text-underline-offset: 2px; }
+a:hover { color: var(--crimson); }
+button { font-family: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--c-t); outline-offset: 2px; }
+.wrap { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+section[id], h2[id], h3[id] { scroll-margin-top: 72px; }
+
+/* Шапка с герба */
+.site-head { background: var(--ink); color: #FFFFFF; padding-top: 20px; }
+.head-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 12px; }
+.back { color: var(--gold); font-weight: 700; font-size: 15px; text-decoration: none; padding: 12px 0; }
+.back:hover { color: #FFFFFF; text-decoration: underline; }
+.head-links { display: flex; flex-wrap: wrap; gap: 2px; }
+.head-links a { color: #FFFFFF; font-weight: 500; font-size: 15px; text-decoration: none; padding: 12px; }
+.head-links a:hover { color: var(--gold); }
+.hero { display: flex; flex-wrap: wrap; align-items: center; gap: 24px 32px; padding: 20px 0 40px; }
+.coa { width: 132px; height: auto; flex: 0 0 auto; }
+.hero-text { flex: 1 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+.eyebrow { margin: 0; color: var(--gold); font-weight: 700; font-size: 15px; letter-spacing: 2px; text-transform: uppercase; }
+.hero h1 { margin: 0; font-weight: 900; font-size: clamp(38px, 6vw, 76px); line-height: 1.02; letter-spacing: -1.5px; text-wrap: balance; }
+.hero .lead { margin: 0; max-width: 700px; color: #DCDAD0; font-size: 19px; }
+.stripe { display: flex; height: 10px; }
+.stripe span { flex: 1; }
+.stripe span:nth-child(1) { background: var(--c-s); } .stripe span:nth-child(2) { background: var(--c-b); }
+.stripe span:nth-child(3) { background: var(--c-f); } .stripe span:nth-child(4) { background: var(--c-t); }
+.stripe span:nth-child(5) { background: var(--crimson); }
+
+/* Заглавия и блокове */
+.sec { margin-top: 64px; display: flex; flex-direction: column; gap: 20px; }
+.sec-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px; }
+.sec-head > div:first-child { display: flex; flex-direction: column; gap: 6px; }
+h2.title { margin: 0; font-size: clamp(28px, 3.4vw, 40px); font-weight: 900; line-height: 1.1; letter-spacing: -0.5px; text-wrap: balance; }
+.sub { margin: 0; color: var(--mut); max-width: 780px; }
+.panel { background: var(--card); border: 2px solid var(--ink); border-radius: 16px; }
+.muted { color: var(--mut); }
+.small { font-size: 14px; }
+
+/* Бутони-превключватели */
+.pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.pill { min-height: 44px; padding: 0 16px; border-radius: 10px; font-weight: 700; font-size: 15px; border: 2px solid var(--ink); background: #FFFFFF; color: var(--ink); }
+.pill:hover { background: var(--soft); }
+.pill[aria-pressed="true"] { background: var(--ink); color: var(--gold); }
+.seg { display: flex; background: var(--track); border-radius: 12px; padding: 4px; gap: 4px; }
+.seg button { min-height: 44px; padding: 0 16px; border: 0; border-radius: 9px; font-weight: 700; font-size: 15px; background: transparent; color: var(--ink); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: #FFFFFF; }
+.cta { display: inline-flex; align-items: center; min-height: 48px; padding: 0 22px; background: var(--gold); color: var(--ink); border-radius: 12px; font-weight: 700; text-decoration: none; border: 2px solid var(--ink); }
+.cta:hover { background: #FFC400; color: var(--ink); }
+
+/* Етикети за доказателства */
+.ev { display: inline-block; min-width: 26px; text-align: center; font-weight: 700; font-size: 13px; line-height: 22px; border-radius: 6px; padding: 0 5px; color: #FFFFFF; }
+.ev-Д { background: #0F6B2E; } .ev-М { background: #2F5FA8; } .ev-С { background: #8A5A00; } .ev-Т { background: #B3261E; } .ev-О { background: #6B6B6B; }
+
+/* Ленти с оценки */
+.meter { height: 10px; background: var(--track); border-radius: 5px; overflow: hidden; }
+.meter i { display: block; height: 100%; border-radius: 5px; }
+.lv-hi { background: var(--good); } .lv-mid { background: var(--warn); } .lv-lo { background: var(--bad); }
+
+/* Долен колонтитул */
+.site-foot { margin-top: 72px; background: var(--ink); color: #CFCDC4; padding: 32px 0; font-size: 14px; }
+.site-foot .wrap { display: flex; flex-direction: column; gap: 10px; }
+.site-foot a { color: var(--gold); }
+
+@media (max-width: 640px) {
+  body { font-size: 16px; }
+  .coa { width: 96px; }
+  .hero .lead { font-size: 17px; }
+}
+@media print { .head-links, .pills, .seg { display: none; } }

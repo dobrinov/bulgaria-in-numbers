@@ -27,6 +27,8 @@ const councils = [
   ['2011–2015', 5.8, [4, 6, 5, 8]], ['2015–2019', 5.0, [3, 5, 5, 7]], ['2019–2023', 4.3, [3, 4, 4, 6]], ['2023–2027*', 3.3, [3, 4, 4, 2]],
 ];
 const councilCrit = ['Контрол', 'Ключови решения', 'Почтеност', 'Стабилност'];
+// Цветовете на кметовете идват от четирите полета на герба (същите като в sofia-mayors.html).
+const MCOL = { Софиянски: '#D9481F', Борисов: '#F2B705', Фандъкова: '#3E8E3A', Терзиев: '#2F6FB0' };
 
 const C = { right: '#2F7FD1', rad: '#8CC0F0', bsp: '#D62828', gerb: '#12355B', ssd: '#F2A33A', ger: '#8DB634', ndsv: '#E8C400', ataka: '#5B3A29', vmro: '#8B1E3F', ppdb: '#6A4C93', vaz: '#2E7D4F', itn: '#17A2B8', kod: '#7FA8D9', other: '#9A9A9A' };
 const seats = [
@@ -51,7 +53,7 @@ const bars = (vals, labels) =>
 
 const scoreboardHtml = `
 <div class="cards">${mayors.map((m) => `
-  <a class="card" href="#@@${m.key}">
+  <a class="card" href="#@@${m.key}" style="border-top:10px solid ${MCOL[m.key]}">
     <div class="ch"><div><h4>${m.name}</h4><p>${m.term}</p></div><div class="score t-${tone(m.score)}">${num(m.score)}<small>/10</small></div></div>
     ${bars(m.sub, mayorCrit)}
   </a>`).join('')}
@@ -163,99 +165,112 @@ const page = `<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Кметовете и СОС на София, 1995–2026</title>
 <meta name="description" content="Оценка на кметовете и общинските съвети на София от 1995 г. насам, основана на документи и данни: какво свърши всеки добре и зле, как бяха разпределени 61-те мандата в СОС и твърдите показатели зад оценките.">
-<link rel="canonical" href="https://dobrinov.github.io/bulgaria-in-numbers/sofia-mayors.html">
+<link rel="canonical" href="https://dobrinov.github.io/bulgaria-in-numbers/sofia-mayors-report.html">
 <meta property="og:type" content="article">
 <meta property="og:locale" content="bg_BG">
 <meta property="og:site_name" content="България в цифри">
-<meta property="og:title" content="Кметовете и СОС на София, 1995–2026">
+<meta property="og:title" content="Кметовете и СОС на София, 1995–2026 — пълен доклад">
 <meta property="og:description" content="Четирима кмета и осем общински съвета, оценени по документи и данни.">
-<meta property="og:url" content="https://dobrinov.github.io/bulgaria-in-numbers/sofia-mayors.html">
+<meta property="og:url" content="https://dobrinov.github.io/bulgaria-in-numbers/sofia-mayors-report.html">
+<meta property="og:image" content="https://dobrinov.github.io/bulgaria-in-numbers/og-sofia-mayors.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Гербът на София и надпис „Кой как управлява София“ с оценките на четиримата кмета">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Кметовете и СОС на София — пълен доклад">
+<meta name="twitter:image" content="https://dobrinov.github.io/bulgaria-in-numbers/og-sofia-mayors.png">
+<meta name="theme-color" content="#111111">
 <link rel="icon" href="./favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,400;0,500;0,700;0,900;1,400&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;900&amp;display=swap">
+<link rel="stylesheet" href="./sofia.css">
 <style>
-:root{--bg:#FFFDF4;--ink:#111;--mut:#5b5b55;--line:#e4dfc9;--yel:#FFE11A;--teal:#1E9C8C;--good:#0F6B2E;--bad:#B3261E;--card:#fff}
-*,*::before,*::after{box-sizing:border-box}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 Rubik,Arial,sans-serif;overflow-x:hidden}
-a{color:inherit;text-decoration-color:var(--teal);text-underline-offset:2px}a:hover{color:var(--good)}
-header{background:var(--ink);color:#fff;padding:44px 20px 40px}
-.wrap{max-width:1080px;margin:0 auto}
-.back{display:inline-block;color:var(--yel);font-weight:700;font-size:15px;text-decoration:none;margin-bottom:18px}.back:hover{color:#fff;text-decoration:underline}
-.kick{margin:0 0 14px;color:var(--yel);font-weight:700;font-style:italic}
-h1{margin:0;font-weight:900;font-size:clamp(38px,7vw,84px);line-height:1;letter-spacing:-2px;text-wrap:balance}
-.meta{margin:18px 0 0;color:#cfcfc6;font-size:15px}
-.stripe{height:12px;background:var(--teal)}
-nav{position:sticky;top:0;z-index:5;background:var(--yel);border-bottom:3px solid var(--ink);overflow-x:auto;white-space:nowrap}
-nav .wrap{display:flex;gap:4px;padding:8px 16px}
-nav a{font-weight:700;font-size:14px;text-decoration:none;padding:6px 10px;border-radius:6px}
-nav a:hover{background:var(--ink);color:var(--yel)}
-main{padding:0 16px 80px}
-.lede{font-size:19px;line-height:1.6;margin:36px 0 0;padding:22px 24px;background:var(--card);border:3px solid var(--ink);border-radius:12px;box-shadow:6px 6px 0 var(--ink)}
-section{scroll-margin-top:60px}
-h2{font-weight:900;font-size:clamp(26px,3.6vw,40px);line-height:1.12;letter-spacing:-.5px;margin:64px 0 16px;padding-top:20px;border-top:6px solid var(--ink);text-wrap:balance}
-h3{font-weight:700;font-size:22px;line-height:1.25;margin:38px 0 12px;scroll-margin-top:60px}
-h3.good{color:var(--good)}h3.bad{color:var(--bad)}
-h4{margin:0;font-size:18px;font-weight:700}h4.sub{margin:30px 0 12px}
-p{margin:0 0 14px;max-width:78ch}
-ul{max-width:100%;padding-left:20px}li{margin-bottom:10px;overflow-wrap:anywhere}
-.tw{overflow-x:auto;margin:14px 0 22px;border:2px solid var(--ink);border-radius:10px;background:var(--card)}
+.meta{margin:0;color:#B9B7AE;font-size:15px}
+.toc{position:sticky;top:0;z-index:5;background:#FFFFFF;border-bottom:2px solid var(--ink);overflow-x:auto;white-space:nowrap}
+.toc .wrap{display:flex;gap:4px;padding-top:8px;padding-bottom:8px}
+.toc a{display:inline-flex;align-items:center;min-height:40px;font-weight:700;font-size:14px;text-decoration:none;padding:0 12px;border-radius:9px}
+.toc a:hover{background:var(--ink);color:#FFFFFF}
+.lede{font-size:19px;line-height:1.6;margin:36px 0 0;padding:24px;background:var(--card);border:2px solid var(--ink);border-radius:16px}
+.report h2{font-weight:900;font-size:clamp(28px,3.4vw,40px);line-height:1.1;letter-spacing:-.5px;margin:72px 0 16px;text-wrap:balance}
+.report h3{font-weight:700;font-size:22px;line-height:1.25;margin:36px 0 12px}
+.report h3.good{color:var(--good)}.report h3.bad{color:var(--bad)}
+.report h4{margin:0;font-size:18px;font-weight:700}.report h4.sub{margin:30px 0 12px}
+.report p{margin:0 0 14px;max-width:80ch}
+.report ul{padding-left:20px}.report li{margin-bottom:10px;overflow-wrap:anywhere}
+.tw{overflow-x:auto;margin:14px 0 22px;border:2px solid var(--ink);border-radius:16px;background:var(--card)}
 .tw.good{border-top:8px solid var(--good)}.tw.bad{border-top:8px solid var(--bad)}
-table{border-collapse:collapse;width:100%;min-width:640px;font-size:15px;line-height:1.45}
-th{background:var(--ink);color:#fff;text-align:left;font-weight:700;padding:9px 12px;vertical-align:bottom}
-td{padding:9px 12px;border-top:1px solid var(--line);vertical-align:top}
-tbody tr:nth-child(even) td{background:#fbf8ea}
-td:first-child{min-width:260px}
-td.evc{white-space:nowrap;min-width:0}
-.ev{display:inline-block;min-width:22px;text-align:center;font-weight:700;font-size:12px;border-radius:5px;padding:1px 5px;color:#fff}
-.ev-Д{background:#0F6B2E}.ev-М{background:#2F5FA8}.ev-С{background:#9A6B00}.ev-Т{background:#B3261E}.ev-О{background:#6b6b6b}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:8px 0}
-.card{display:block;text-decoration:none;background:var(--card);border:3px solid var(--ink);border-radius:12px;padding:16px;box-shadow:4px 4px 0 var(--ink)}
-a.card:hover{color:inherit;transform:translate(-1px,-1px);box-shadow:6px 6px 0 var(--teal)}
+.tw table{border-collapse:collapse;width:100%;min-width:640px;font-size:15px;line-height:1.45}
+.tw th{background:var(--ink);color:#FFFFFF;text-align:left;font-weight:700;padding:10px 14px;vertical-align:bottom}
+.tw td{padding:10px 14px;border-top:1px solid var(--line);vertical-align:top}
+.tw tbody tr:nth-child(even) td{background:var(--soft)}
+.tw td:first-child{min-width:260px}
+.tw td.evc{white-space:nowrap;min-width:0}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:8px 0}
+.card{display:block;text-decoration:none;background:var(--card);border:2px solid var(--ink);border-radius:16px;padding:18px}
+a.card:hover{color:inherit;box-shadow:0 4px 0 var(--ink)}
 .ch{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:12px}
 .ch p{margin:2px 0 0;color:var(--mut);font-size:14px}
 .score{font-weight:900;font-size:44px;line-height:1;white-space:nowrap}.score.sm{font-size:32px}
 .score small{font-size:14px;font-weight:500;color:var(--mut)}
-.score.t-hi,.score.t-mid{color:var(--good)}.score.t-low{color:#9A6B00}.score.t-bad{color:var(--bad)}
-.bar{display:grid;grid-template-columns:minmax(0,1fr) 70px 18px;align-items:center;gap:8px;font-size:13px;margin-top:5px}
+.bar{display:grid;grid-template-columns:minmax(0,1fr) 70px 18px;align-items:center;gap:8px;font-size:13px;margin-top:6px}
 .bl{color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.bt{height:9px;background:#ece7d2;border-radius:5px;overflow:hidden}
-.bt i{display:block;height:100%}
-i.t-hi{background:#0F6B2E}i.t-mid{background:#1E9C8C}i.t-low{background:#E0A100}i.t-bad{background:#B3261E}
+.bt{height:9px;background:var(--track);border-radius:5px;overflow:hidden}
+.bt i{display:block;height:100%;border-radius:5px}
+i.t-hi,i.t-mid{background:var(--good)}i.t-low{background:var(--warn)}i.t-bad{background:var(--bad)}
 .bar b{text-align:right}
 .note{color:var(--mut);font-size:14px;margin-top:10px}
-.seats{margin:10px 0 24px;background:var(--card);border:3px solid var(--ink);border-radius:12px;padding:18px;box-shadow:4px 4px 0 var(--ink)}
+.seats{margin:10px 0 24px;background:var(--card);border:2px solid var(--ink);border-radius:16px;padding:20px}
 .srow{display:grid;grid-template-columns:150px minmax(0,1fr);gap:14px;padding:12px 0;border-top:1px solid var(--line)}
 .srow:first-child{border-top:0;padding-top:0}
 .sy b{display:block;font-size:26px;font-weight:900;line-height:1}
 .sy span{display:block;font-size:13px;color:var(--mut)}
-.conf{margin-top:4px;font-weight:700}.conf-medium{color:#9A6B00!important}.conf-high{color:var(--good)!important}
+.conf{margin-top:4px;font-weight:700}.conf-medium{color:#8A5A00!important}.conf-high{color:var(--good)!important}
 .sbar{position:relative;display:flex;gap:2px;height:34px;border-radius:6px;overflow:hidden}
-.sbar span{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;min-width:3px}
-.maj{position:absolute;left:calc(31 / 61 * 100%);top:0;bottom:0;width:0;border-left:3px dashed #fff;mix-blend-mode:difference}
+.sbar span{display:flex;align-items:center;justify-content:center;color:#FFFFFF;font-weight:700;font-size:13px;min-width:3px}
+.maj{position:absolute;left:calc(31 / 61 * 100%);top:0;bottom:0;width:0;border-left:3px dashed #FFFFFF}
 .sleg{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px;font-size:13px}
 .sleg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px}
-footer{background:var(--ink);color:#cfcfc6;padding:28px 20px;font-size:14px}
-@media (max-width:640px){body{font-size:16px}.srow{grid-template-columns:1fr;gap:8px}.lede{font-size:17px;padding:16px}}
-@media print{nav{display:none}.card,.seats,.lede{box-shadow:none}}
+.back-cta{margin-top:56px;background:var(--ink);color:#FFFFFF;border-radius:16px;padding:28px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:20px}
+.back-cta h2{margin:0;font-size:26px;font-weight:900}
+.back-cta p{margin:6px 0 0;color:#DCDAD0}
+@media (max-width:640px){.srow{grid-template-columns:1fr;gap:8px}.lede{font-size:17px;padding:16px}}
+@media print{.toc,.back-cta{display:none}}
 </style>
 </head>
 <body>
-<header><div class="wrap">
-  <a class="back" href="./">← България в цифри</a>
-  <p class="kick">Кметовете на София и Столичният общински съвет, 1995 – 2026, оценени по доказателствата</p>
-  <h1>${esc(title)}</h1>
-  <p class="meta">Към 14 ноември 2026 г. · оценките са преценка на доклада по обявени критерии, а не официална мярка · всяко число води към източника си</p>
-</div></header>
-<div class="stripe"></div>
-<nav><div class="wrap">${nav}</div></nav>
-<main><div class="wrap">
+<header class="site-head">
+  <div class="wrap">
+    <div class="head-top">
+      <a class="back" href="./sofia-mayors.html">← Интерактивният преглед</a>
+      <nav class="head-links" aria-label="Сайт"><a href="./">България в цифри</a></nav>
+    </div>
+    <div class="hero">
+      <img class="coa" src="./sofia-coa.png" alt="Гербът на София" width="132" height="153">
+      <div class="hero-text">
+        <p class="eyebrow">Пълен доклад · София 1995 – 2026</p>
+        <h1>${esc(title)}</h1>
+        <p class="meta">Към 14 ноември 2026 г. · оценките са преценка на доклада по обявени критерии, а не официална мярка · всяко число води към източника си</p>
+      </div>
+    </div>
+  </div>
+  <div class="stripe" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+</header>
+<nav class="toc" aria-label="Съдържание"><div class="wrap">${nav}</div></nav>
+<main class="wrap report">
 <p class="lede">${lede}</p>
 ${html}
-</div></main>
-<footer><div class="wrap">Съставено от публични документи: доклади на Сметната палата, отчети за бюджета и дълга на Столична община, документи на СОС, Евростат, съдебни решения и медийни публикации. Етикети за доказателствата: <span class="ev ev-Д">Д</span> документирано · <span class="ev ev-М">М</span> медийна информация · <span class="ev ev-С">С</span> самоотчет на общината · <span class="ev ev-Т">Т</span> твърдение или обвинение · <span class="ev ev-О">О</span> само откъс от търсачка.</div></footer>
+<section class="back-cta">
+  <div><h2>По-кратко и интерактивно</h2><p>Линия на времето с кметовете, мандатите в СОС квадрат по квадрат и графики по години.</p></div>
+  <a class="cta" href="./sofia-mayors.html">← Към интерактивния преглед</a>
+</section>
+</main>
+<footer class="site-foot"><div class="wrap">
+  <span>Съставено от публични документи: доклади на Сметната палата, отчети за бюджета и дълга на Столична община, документи на СОС, Евростат, съдебни решения и медийни публикации.</span>
+  <span>Етикети за доказателствата: <span class="ev ev-Д">Д</span> документирано · <span class="ev ev-М">М</span> медийна информация · <span class="ev ev-С">С</span> самоотчет на общината · <span class="ev ev-Т">Т</span> твърдение или обвинение · <span class="ev ev-О">О</span> само откъс от търсачка.</span>
+  <span>„България в цифри“ е независим граждански проект. Гербът на София е използван като символ на града и не означава одобрение от Столична община.</span>
+</div></footer>
 </body>
 </html>
 `;
